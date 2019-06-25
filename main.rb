@@ -5,6 +5,21 @@ $name = []
 $history = nil
 
 ### Classes
+class Map
+    attr_reader :size
+    def initialize(side)
+        @size = side * side
+    end
+end
+
+class Cell
+    attr_accessor :obstacle
+    
+    def initialize
+        @obstacle = nil
+    end
+end
+
 class Obstacle
     attr_accessor :pos_x
     attr_accessor :pos_y
@@ -24,17 +39,15 @@ class Person < Obstacle
 end
 
 class Store < Obstacle
-    attr_accessor :name
-    attr_accessor :foods
-    attr_accessor :prices
+    attr_accessor :name , :foods, :prices
     def initialize(name, x, y, *menu)
         super(x, y)
         #"Warung #{$name[rand($name.length)]}"
         @name = name
-        @num_of_foods = menu.length
+        @num_of_foods = menu.length / 2
 
         i = 0
-        while i < @num_of_foods
+        while i < menu.length
             @foods[i] = menu[i]
             @prices[i] = menu[i + 1]
             i = i + 2
@@ -75,6 +88,7 @@ end
 
 def execute_game(first_arg, *rest_args)
     ##Execute the Go-Eat game
+    create_database("menu.txt", "name.txt", "history.txt")
 
     if(first_arg.eql?("file"))
         #Create map from file
@@ -118,7 +132,6 @@ def execute_arg(args)
 end
 
 ### Main Program
-create_database("menu.txt", "name.txt", "history.txt")
 execute_arg(ARGV)
 
 #split(/\s*-\s*/)
