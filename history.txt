@@ -1,0 +1,15 @@
+Warung Intan
+Budi
+7
+driver is on the way to store, start at (1,2)
+go to (1,2)
+go to (1,3), driver arrived at the store!
+driver has bought the item(s), start at (1,3)
+go to (1,2)
+go to (2,2)
+go to (2,1), driver arrived at your place!
+3
+Chicken Mozzarela Steak @ 44000
+Premium Pizza @ 80000
+Cheese Burst Pizza @ 100000
+224000

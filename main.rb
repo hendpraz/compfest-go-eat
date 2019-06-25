@@ -2,13 +2,13 @@
 $foods = []
 $prices = []
 $name = []
-$history = nil
+$history = []
 
 ### Classes
 class Map
     attr_reader :size
-    def initialize(side)
-        @size = side * side
+    def initialize(size)
+        @size = size
     end
 end
 
@@ -17,6 +17,10 @@ class Cell
     
     def initialize
         @obstacle = nil
+    end
+
+    def render()
+        print "-"
     end
 end
 
@@ -54,6 +58,10 @@ class Store < Obstacle
         end
     end
 
+    def render
+        print "S"
+    end
+
     def show_menu
         puts "Please select your order by number"
         for i in 0...@num_of_foods
@@ -69,6 +77,10 @@ class Driver < Person
         super($name[rand($name.length)])
         @rating = 0.0
     end
+
+    def render
+        print "D"
+    end
 end
 
 class User < Person
@@ -79,11 +91,39 @@ class User < Person
         @pos_x = x
         @pos_y = y
     end
+
+    def render
+        print "U"
+    end
 end
 
 ### Functions
 def create_database(menu, name, history)
+    begin
+        File.open(menu,"r") do |str|
+            while line = str.gets
+                temp = line.split(/\s*@\s*/)
+                $foods.push(temp[0])
+                $prices.push(temp[1])
+            end
+        end
 
+        File.open(name,"r") do |str|
+            while line = str.gets
+                $name.push(line.strip)
+            end
+        end
+
+        File.open(history,"r") do |str|
+            while line = str.gets
+                $history.push(line.strip)
+            end
+        end
+
+    rescue Exception => e
+        puts e.message + "\n\n"
+        exit
+    end
 end
 
 def execute_game(first_arg, *rest_args)
@@ -92,10 +132,11 @@ def execute_game(first_arg, *rest_args)
 
     if(first_arg.eql?("file"))
         #Create map from file
-        if(File.exists?(first_arg))
-            input_file = File.open(first_arg,"r")
-        else
-            puts "File not found!\n"
+        begin
+            input_file = File.open(rest_args[0],"r")
+        rescue Exception => e
+            puts e.message
+            puts "Please input a filename (with its extension)\n\n"
             exit
         end
     else
@@ -118,20 +159,25 @@ def execute_arg(args)
     if args.length == 0
         execute_game("num")
     elsif args.length == 3
-        if (args[0] < 0) || (args[1] < 0) || (args[2] < 0)
-            puts "Arguments invalid! Please input non-negative integer arguments\n"
-        else
-            execute_game("num",args[0], args[1], args[2])
+        args.each do |x|
+            begin 
+                if(Integer(x) < 0)
+                    puts "Arguments invalid! Please input non-negative integer arguments\n\n"
+                    exit
+                end
+            rescue Exception => e
+                puts "Arguments invalid! Please input integer arguments\n\n"
+                exit
+            end
         end
+        execute_game("num", *args)
     elsif args.length == 1
-        execute_game("file",args[0])
+        execute_game("file", *args)
     else
-        puts "Arguments invalid! Please input filename in arguments (with its extension)\n"
+        puts "Arguments invalid! Wrong number of arguments\n\n"
         exit
     end
 end
 
 ### Main Program
 execute_arg(ARGV)
-
-#split(/\s*-\s*/)
