@@ -89,7 +89,7 @@ class Store < Creation
     end
 
     def show_menu
-        puts "Please select your order by number"
+        puts "\nPlease select your order by number"
         for i in 0...@num_of_foods
             puts "#{i+1}. #{@foods[i]}  Rp.#{@prices[i]}"
         end
@@ -138,7 +138,18 @@ def create_database(menu, name, history)
 
         File.open(history,"r") do |str|
             while line = str.gets
-                $history.push(line.strip)
+                $history.push(line.strip) #name
+                
+                line = str.gets.chomp #skip driver's name
+                routes = str.gets.to_i
+                for i in (1..routes)
+                    line = str.gets.chomp #skip driver's route
+                end
+
+                while line != "---"
+                    line = str.gets.chomp
+                    $history.push(line)
+                end
             end
         end
 
@@ -167,6 +178,18 @@ def show_help
     puts "For example, your command: 1\n\n"
 end
 
+def view_history
+    if $history.length == 0
+        puts "\nNothing on your history...\n\n"
+    else
+        puts "\nOrder History:\n\n"
+        $history.each do |line|
+            puts line.strip
+        end
+        puts ""
+    end
+end
+
 def execute_game(first_arg, *rest_args)
     ##Execute the Go-Eat game
     history = "history.txt"
@@ -177,7 +200,6 @@ def execute_game(first_arg, *rest_args)
     n = nil
     gmap = nil
     user = nil
-
 
     if(first_arg.eql?("file"))
         #Create map from file
@@ -360,9 +382,10 @@ def execute_game(first_arg, *rest_args)
                 puts "Wrong input! Getting back to main menu...\n\n"
             end
         elsif(cmd.to_i.eql?(3)) || (cmd.eql?("View History"))
-
+            view_history
         elsif(cmd.to_i.eql?(4)) || (cmd.eql?("Clear History"))
-            File.truncate(history, 0)
+            #File.truncate(history, 0)
+            $history = Array.new
         elsif(cmd.to_i.eql?(5)) || (cmd.eql?("Exit"))
             puts "Closing the application...\n\n"
             exit
