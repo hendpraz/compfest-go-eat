@@ -22,12 +22,13 @@ class Map
     end
 
     def assign(x, y, obj)
+        #assign object to map cell
         @cell[x][y].creation = obj
     end
 
     def is_nil(x, y)
+        #check wether cell in [x,y] nil or not
         temp = @cell[x][y]
-
         temp.creation == nil
     end
 end
@@ -65,17 +66,20 @@ class Person < Creation
 end
 
 class Store < Creation
-    attr_accessor :name , :foods, :prices
+    attr_accessor :name , :foods, :prices, :num_of_foods
     def initialize(x, y, name, *menu)
         super(x, y)
         
         @name = name
-        @num_of_foods = menu.length / 2
+        @num_of_foods = 0
+        @foods = Array.new
+        @prices = Array.new
 
         i = 0
         while i < menu.length
-            @foods[i] = menu[i]
-            @prices[i] = menu[i + 1]
+            @foods[@num_of_foods] = menu[i]
+            @prices[@num_of_foods] = menu[i + 1]
+            @num_of_foods += 1
             i = i + 2
         end
     end
@@ -87,7 +91,7 @@ class Store < Creation
     def show_menu
         puts "Please select your order by number"
         for i in 0...@num_of_foods
-            puts "1. #{@foods[i]}  Rp.#{@prices[i]}"
+            puts "#{i+1}. #{@foods[i]}  Rp.#{@prices[i]}"
         end
         puts ""
     end
@@ -122,7 +126,7 @@ def create_database(menu, name, history)
             while line = str.gets
                 temp = line.split(/\s*@\s*/)
                 $foods.push(temp[0])
-                $prices.push(temp[1])
+                $prices.push(temp[1].to_i)
             end
         end
 
@@ -151,16 +155,22 @@ def random_store(max_index)
 
     min_index = rand(max_index)
     for i in (min_index..max_index)
-        store_objects.push($foods[i])
-        store_objects.push($prices[i])
+        store_objects.push($foods[i].strip)
+        store_objects.push($prices[i].to_i)
     end
 
     store_objects
 end
 
+def show_help
+    puts "Please select a command by inputing a number"
+    puts "For example, your command: 1\n\n"
+end
+
 def execute_game(first_arg, *rest_args)
     ##Execute the Go-Eat game
-    create_database("menu.txt", "name.txt", "history.txt")
+    history = "history.txt"
+    create_database("menu.txt", "name.txt", history)
     drivers = []
     stores = []
     
@@ -191,8 +201,7 @@ def execute_game(first_arg, *rest_args)
 
                     driver = Driver.new(driver_x, driver_y)
                     gmap.assign(driver_x, driver_y, driver)
-                    drivers.push(driver_x)
-                    drivers.push(driver_y)
+                    drivers.push(driver)
                 end
 
                 q = str.gets.to_i
@@ -202,18 +211,17 @@ def execute_game(first_arg, *rest_args)
                     store_y = line[1].to_i
                     
                     store_attr = []
-                    store_attr.push(str.gets) #Store name
+                    store_name = str.gets.chomp #Store name
                     r = str.gets.to_i #Store menu
                     for j in (0...r)
                         line = str.gets.split(/\s*@\s*/)
-                        store_attr.push(line[0])
-                        store_attr.push(line[1].to_i)
+                        store_attr.push(line[0].strip) #food
+                        store_attr.push(line[1].to_i) #price
                     end
 
-                    store = Store.new(store_x, store_y, random_store(5))
+                    store = Store.new(store_x, store_y, store_name, *store_attr)
                     gmap.assign(store_x, store_y, store)
-                    stores.push(store_x)
-                    stores.push(store_y)
+                    stores.push(store)
                 end
             rescue Exception => e
                 puts e.message
@@ -238,40 +246,131 @@ def execute_game(first_arg, *rest_args)
 
         #Create 5 drivers and 3 stores
         for i in (0...5)
-            driver_x, driver_y = rand(n-1), rand(n-1)
+            driver_x, driver_y = rand(0...n), rand(0...n)
             while(!gmap.is_nil(driver_x, driver_y))
-                driver_x, driver_y = rand(n-1), rand(n-1)
+                driver_x, driver_y = rand(0...n), rand(0...n)
             end
             driver = Driver.new(driver_x, driver_y)
             gmap.assign(driver_x, driver_y, driver)
              
-            drivers.push(driver_x)
-            drivers.push(driver_y)
+            drivers.push(driver)
         end
 
         for i in (0...3)
-            store_x, store_y = rand(n-1), rand(n-1)
+            store_x, store_y = rand(0...n), rand(0...n)
             while(!gmap.is_nil(store_y, store_y))
-                store_x, store_y = rand(n-1), rand(n-1)
+                store_x, store_y = rand(0...n), rand(0...n)
             end
 
-            store = Store.new(store_x, store_y, random_store(5))
+            store_attr = random_store(5)
+            store_name, *store_attr = store_attr
+
+            store = Store.new(store_x, store_y, store_name, *store_attr)
             gmap.assign(store_x, store_y, store)
-            stores.push(store_x)
-            stores.push(store_y)
+            stores.push(store)
         end
     end
 
     #Loop the game
     while(true)
-        for i in (0...n)
-            for j in (0...n)
-                gmap.cell[i][j].render
-                print " "
+        puts "Command available:"
+        puts "1. Show Map"
+        puts "2. Order Food"
+        puts "3. View History"
+        puts "4. Clear History"
+        puts "5. Exit"
+        puts ""
+        print "Your Command: "
+        cmd = STDIN.gets.chomp
+        if(cmd.to_i.eql?(1)) || (cmd.eql?("Show Map"))
+            for i in (0...n)
+                for j in (0...n)
+                    gmap.cell[i][j].render
+                    print " "
+                end
+                puts "\n"
             end
-            puts ""
+            puts "\n"
+        elsif(cmd.to_i.eql?(2)) || (cmd.eql?("Order Food"))
+            i = 1
+            stores.each do |obj|
+                puts "#{i}. #{obj.name}"
+                i += 1
+            end
+            puts "\n0. Cancel\n\n"
+            puts "You can choose a store by number"
+            print "Your Choice: "
+            cmd = STDIN.gets.chomp
+            if(cmd.to_i.eql?(0)) ||(cmd.eql?("Cancel"))
+                puts "Loading the main menu...\n\n"
+            elsif(cmd.to_i <= stores.length) && (cmd.to_i > 0)
+                selected_store = stores[cmd.to_i - 1]
+                done = false
+                close = false
+                order = Array.new
+                while(!done) && (!close)
+                    selected_store.show_menu
+                    puts "0. Cancel\n\n"
+                    puts "You can choose a menu by number"
+                    print "Your Choice: "
+                    cmd = STDIN.gets.chomp
+                    if(cmd.to_i.eql?(0)) ||(cmd.eql?("Cancel"))
+                        close = true
+                        puts "Loading the main menu...\n\n"
+                    elsif(cmd.to_i <= selected_store.num_of_foods) && (cmd.to_i > 0)
+                        idx = cmd.to_i - 1
+                        order.push(selected_store.foods[idx])
+                        order.push(selected_store.prices[idx])
+                        puts "\nHow many #{selected_store.foods[idx]} you want to buy?"
+                        print "Your Choice: "
+                        cmd = STDIN.gets.chomp
+                        if(cmd.to_i.eql?(0)) ||(cmd.eql?("Cancel"))
+                            close = true
+                            puts "Loading the main menu...\n\n"
+                        elsif(cmd.to_i > 0)
+                            order.push(cmd.to_i)
+                            puts "#{cmd.to_i} #{selected_store.foods[idx]} has been added to your order\n\n"
+                            puts "Finish the order? (Y/N)"
+                            print "Your Choice: "
+                            cmd = STDIN.gets.chomp
+                            if(cmd.eql?("Y"))
+                                done = true
+                            end
+                        else
+                            close = true
+                            puts "Wrong input! Getting back to main menu...\n\n"
+                        end
+                    else
+                        close = true
+                        puts "Wrong input! Getting back to main menu...\n\n"
+                    end
+                end
+                if(!close)
+                    puts "\nYour order: "
+                    i = 0
+                    total_price = 0
+                    while i < order.length
+                        puts "#{order[i]} @ #{order[i+1]} x #{order[i+2]}"
+                        total_price = total_price + (order[i+1] * order[i+2])
+                        i += 3
+                    end
+                    puts "Total price: #{total_price}\n\n"
+                end
+            else
+                puts "Wrong input! Getting back to main menu...\n\n"
+            end
+        elsif(cmd.to_i.eql?(3)) || (cmd.eql?("View History"))
+
+        elsif(cmd.to_i.eql?(4)) || (cmd.eql?("Clear History"))
+            File.truncate(history, 0)
+        elsif(cmd.to_i.eql?(5)) || (cmd.eql?("Exit"))
+            puts "Closing the application...\n\n"
+            exit
+        elsif(cmd.eql?("help"))
+            show_help
+        else
+            puts "Unknown command! Use 'help' to show help\n\n"
         end
-        h = STDIN.gets
     end
 
 end
