@@ -77,8 +77,8 @@ class Store < Creation
 
         i = 0
         while i < menu.length
-            @foods[@num_of_foods] = menu[i]
-            @prices[@num_of_foods] = menu[i + 1]
+            @foods.push(menu[i])
+            @prices.push(menu[i + 1])
             @num_of_foods += 1
             i = i + 2
         end
@@ -140,16 +140,17 @@ def create_database(menu, name, history)
             while line = str.gets
                 $history.push(line.strip) #name
                 
-                line = str.gets.chomp #skip driver's name
-                routes = str.gets.to_i
-                for i in (1..routes)
-                    line = str.gets.chomp #skip driver's route
-                end
-
-                while line != "---"
+                num_of_foods = str.gets.to_i
+                for i in (1..num_of_foods+1)
+                    #Add each order and total price
                     line = str.gets.chomp
                     $history.push(line)
                 end
+
+                while line != "---"
+                    line = str.gets.chomp #Skip driver's name and routes
+                end
+                $history.push(line) #Add '---'
             end
         end
 
@@ -190,9 +191,36 @@ def view_history
     end
 end
 
+def manhattan(x1, y1, x2, y2)
+    score = (x1 - x2).abs + (y1 - y2).abs
+
+    score
+end
+
+def closest_point(x1, y1, x2, y2)
+    temp = Array.new
+    curr_manhattan = manhattan(x1, y1, x2, y2)
+    if (manhattan(x1, y1 + 1, x2, y2)) < curr_manhattan
+        temp.push(x1)
+        temp.push(y1 + 1)
+    elsif (manhattan(x1, y1 - 1, x2, y2)) < curr_manhattan
+        temp.push(x1)
+        temp.push(y1 - 1)
+    elsif (manhattan(x1 + 1, y1, x2, y2)) < curr_manhattan
+        temp.push(x1 + 1)
+        temp.push(y1)
+    elsif (manhattan(x1 - 1, y1, x2, y2)) < curr_manhattan
+        temp.push(x1 - 1)
+        temp.push(y1)
+    end
+
+    temp
+end
+
 def execute_game(first_arg, *rest_args)
     ##Execute the Go-Eat game
     history = "history.txt"
+    
     create_database("menu.txt", "name.txt", history)
     drivers = []
     stores = []
@@ -314,9 +342,10 @@ def execute_game(first_arg, *rest_args)
             end
             puts "\n"
         elsif(cmd.to_i.eql?(2)) || (cmd.eql?("Order Food"))
+            selected_store = nil
             i = 1
             stores.each do |obj|
-                puts "#{i}. #{obj.name}"
+                puts "#{i}. #{obj.name} at (#{obj.x},#{obj.y})"
                 i += 1
             end
             puts "\n0. Cancel\n\n"
@@ -355,7 +384,7 @@ def execute_game(first_arg, *rest_args)
                             puts "Finish the order? (Y/N)"
                             print "Your Choice: "
                             cmd = STDIN.gets.chomp
-                            if(cmd.eql?("Y"))
+                            if(cmd.eql?("Y")) || (cmd.eql?("Yes")) || (cmd.eql?("y"))
                                 done = true
                             end
                         else
@@ -368,15 +397,84 @@ def execute_game(first_arg, *rest_args)
                     end
                 end
                 if(!close)
+                    order_history = Array.new
+                    #Write store name to file
+                    $history.push(selected_store.name)
+                    order_history.push(selected_store.name)
+                    #Write order length / 3
+                    order_history.push(order.length / 3)
+                    
                     puts "\nYour order: "
                     i = 0
                     total_price = 0
                     while i < order.length
-                        puts "#{order[i]} @ #{order[i+1]} x #{order[i+2]}"
+                        #Write each order
+                        temp = "#{order[i]} @ #{order[i+1]} x #{order[i+2]}"
+                        order_history.push(temp)
+                        $history.push(temp)
+                        puts temp
                         total_price = total_price + (order[i+1] * order[i+2])
                         i += 3
                     end
                     puts "Total price: #{total_price}\n\n"
+                    order_history.push(total_price)
+                    min = gmap.size ** 2
+                    selected_driver = nil
+                    drivers.each do |obj|
+                        temp = manhattan(obj.x, obj.y, selected_store.x, selected_store.y)
+                        if temp < min
+                            selected_driver = obj
+                            min = temp
+                        end
+                    end
+
+                    #Write selected driver name
+                    order_history.push(selected_driver.name)
+                    #Write routes
+                    curr_x, curr_y = selected_driver.x, selected_driver.y
+                    str = "driver is on the way to store, start at (#{curr_x},#{curr_y})"
+                    puts str
+                    order_history.push(str)
+                    
+                    distance = manhattan(curr_x, curr_y, selected_store.x, selected_store.y)
+                    while distance != 0
+                        temp = closest_point(curr_x, curr_y, selected_store.x, selected_store.y)
+                        curr_x, curr_y = temp[0], temp[1]
+                        
+                        str = "go to (#{curr_x},#{curr_y})"
+                        distance = manhattan(curr_x, curr_y, selected_store.x, selected_store.y)
+                        if distance == 0
+                            str = str + ", driver arrived at the store!"
+                        end
+                        puts str
+                        order_history.push(str)
+                    end
+
+                    str = "driver has bought the item(s), start at (#{curr_x},#{curr_y})"
+                    puts str
+                    order_history.push(str)
+
+                    distance = manhattan(curr_x, curr_y, user.x, user.y)
+                    while distance != 0
+                        temp = closest_point(curr_x, curr_y, user.x, user.y)
+                        curr_x, curr_y = temp[0], temp[1]
+                        
+                        str = "go to (#{curr_x},#{curr_y})"
+                        distance = manhattan(curr_x, curr_y, user.x, user.y)
+                        if distance == 0
+                            str = str + ", driver arrived at your place!"
+                        end
+                        puts str
+                        order_history.push(str)
+                    end
+                    puts ""
+                    order_history.push('---')
+
+                    File.open(history, 'a') do |file|
+                        order_history.each do |line|
+                            file.puts "#{line}"
+                        end
+                    end
                 end
             else
                 puts "Wrong input! Getting back to main menu...\n\n"
@@ -384,7 +482,7 @@ def execute_game(first_arg, *rest_args)
         elsif(cmd.to_i.eql?(3)) || (cmd.eql?("View History"))
             view_history
         elsif(cmd.to_i.eql?(4)) || (cmd.eql?("Clear History"))
-            #File.truncate(history, 0)
+            File.truncate(history, 0)
             $history = Array.new
         elsif(cmd.to_i.eql?(5)) || (cmd.eql?("Exit"))
             puts "Closing the application...\n\n"
