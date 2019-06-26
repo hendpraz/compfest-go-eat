@@ -30,6 +30,7 @@ From the Problem Desciption's details, I assume that:
 - User must rate the driver
 - The money of the User is unlimited
 - Two or more same menu in one order is allowed
+- a valid coordinate starts from zero to n
 
 ## Design Decision
 
@@ -128,5 +129,5 @@ I tried to handle:
 
 ## References
 
-Indonesian names: [FaktaMuharam](http://faktamuharam.blogspot.com/2012/11/top-1000-nama-populer-di-indonesia.html)
+Indonesian names: [FaktaMuharam](http://faktamuharam.blogspot.com/2012/11/top-1000-nama-populer-di-indonesia.html)<br>
 Diagram: [Draw.io](https://www.draw.io/)
