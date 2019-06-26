@@ -5,11 +5,11 @@
 </h1>
 
 <h2 align="center">
-  <br>
   Muhammad Hendry Prasetya
-  <br>
+</h2>
+
+<h3 align="center">
   Bandung Institute of Technology
-  <br>
 </h2>
 
 <p align = center> This repository link = [https://github.com/hendpraz/compfest-go-eat](https://github.com/hendpraz/compfest-go-eat) <p>
