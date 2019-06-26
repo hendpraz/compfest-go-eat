@@ -26,24 +26,27 @@ class Map
         x = obj.x
         y = obj.y
         @cell[x][y].creation = obj
+        @cell[x][y].is_nil = false
     end
 
     def delete_driver(x, y)
         @cell[x][y].creation = nil
+        @cell[x][y].is_nil = true
     end
 
     def is_nil(x, y)
         #check wether cell in [x,y] nil or not
         temp = @cell[x][y]
-        temp.creation == nil
+        temp.is_nil
     end
 end
 
 class Cell
-    attr_accessor :creation
+    attr_accessor :creation, :is_nil
 
     def initialize
         @creation = nil
+        @is_nil = true
     end
 
     def render()
@@ -190,10 +193,10 @@ end
 
 def random_driver(gmap)
     n = gmap.size
-    driver_x, driver_y = rand(0...n), rand(0...n)
-    while(!gmap.is_nil(driver_x, driver_y))
-        driver_x, driver_y = rand(0...n), rand(0...n)
-    end
+    
+    temp = random_coordinate(gmap)
+    driver_x, driver_y = temp[0], temp[1]
+    
     driver = Driver.new(driver_x, driver_y)
 
     driver
@@ -242,6 +245,49 @@ def closest_point(x1, y1, x2, y2)
     temp
 end
 
+def check_validity(n, num)
+    if(n < 2) || (n**2 < num)
+        puts "Map size are too small"
+        exit
+    end
+end
+
+def is_in_map(x, y, n)
+    in_map = true
+    if(x < 0) || (y < 0) || (x >= n) || (y >= n)
+        in_map = false
+    end
+
+    in_map
+end
+
+def random_coordinate(gmap)
+    coor = Array.new
+    count_of_rand = 0
+    while (count_of_rand <= 3)
+        coor.push(rand(0...gmap.size))
+        coor.push(rand(0...gmap.size))
+        if(!gmap.is_nil(coor[0], coor[1]))
+            coor = Array.new
+        end
+        count_of_rand += 1
+    end
+    
+    if(count_of_rand > 3)
+        n = gmap.size
+        for i in (0...n)
+            for j in (0...n)
+                if(gmap.is_nil(i,j))
+                    coor.push(i)
+                    coor.push(j)
+                    break
+                end
+            end
+        end
+    end
+    coor
+end
+
 def execute_game(first_arg, *rest_args)
     ##Execute the Go-Eat game
     history = "history.txt"
@@ -256,44 +302,53 @@ def execute_game(first_arg, *rest_args)
 
     if(first_arg.eql?("file"))
         #Create map from file
-        File.open(rest_args[0],"r") do |str|
-            begin
+        begin
+            File.open(rest_args[0],"r") do |str|
                 #Create Map
                 line = str.gets
                 n = line.to_i
+                num_of_creation = 0
+                check_validity(n, num_of_creation)
                 gmap = Map.new(n)
-
+            
                 #Create User
                 line = str.gets.split(" ")
-                if(line[0].to_i >= 0) && (line[0].to_i >= 0)
-                    user = User.new(line[0].to_i,line[1].to_i)
+                num_of_creation += 1
+                user_x = line[0].to_i 
+                user_y = line[0].to_i
+                if is_in_map(user_x, user_y, n)
+                    user = User.new(user_x,user_y)
                     gmap.assign(user)
                 else
-                    puts "Wrong coordinate of user!\n\n"
+                    puts "Wrong coordinate of user!\n"
                     exit
                 end
                 
-                p = str.gets.to_i
+                p = str.gets.to_i #number of drivers
+                num_of_creation += p
+                check_validity(n, num_of_creation)
                 for i in (0...p)
                     line = str.gets.split(" ")
                     driver_x = line[0].to_i
                     driver_y = line[1].to_i
-                    if(driver_x >= 0) && (driver_y >= 0)
+                    if is_in_map(driver_x, driver_y, n)
                         driver = Driver.new(driver_x, driver_y)
                         gmap.assign(driver)
                         drivers.push(driver)
                     else
-                        puts "Wrong coordinate of a driver!\n\n"
+                        puts "Wrong coordinate of a driver!\n"
                         exit
                     end
                 end
 
-                q = str.gets.to_i
+                q = str.gets.to_i #number of store
+                num_of_creation += q
+                check_validity(n, num_of_creation)
                 for i in (0...q)
                     line = str.gets.split(" ")
                     store_x = line[0].to_i
                     store_y = line[1].to_i
-                    if(driver_x >= 0) && (driver_y >= 0)
+                    if is_in_map(store_x,store_y, n)
                         store_attr = []
                         store_name = str.gets.chomp #Store name
                         r = str.gets.to_i #Store menu
@@ -303,7 +358,7 @@ def execute_game(first_arg, *rest_args)
                             store_attr.push(line[1].to_i) #price
                         end
                     else
-                        puts "Wrong coordinate of a store!\n\n"
+                        puts "Wrong coordinate of a store!\n"
                         exit
                     end
 
@@ -311,17 +366,22 @@ def execute_game(first_arg, *rest_args)
                     gmap.assign(store)
                     stores.push(store)
                 end
-            rescue Exception => e
-                puts e.message
-                puts "Please input a filename (with its extension)\n\n"
-                exit
             end
+        rescue Exception => e
+            puts e.message
+            puts "Please input a filename (with its extension)\n\n"
+            exit
         end
+        
     else
         if(rest_args.length == 3)
             #Create map with its size and user position defined by user
             n = rest_args[0].to_i
             user_x, user_y = rest_args[1].to_i, rest_args[2].to_i
+            if !(is_in_map(user_x, user_y, n))
+                puts "Wrong user coordinate"
+                exit
+            end
         else
             #Create map with default option
             n = 20
@@ -333,18 +393,16 @@ def execute_game(first_arg, *rest_args)
         gmap.assign(user)
 
         #Create 5 drivers and 3 stores
-        for i in (0...5)
+        for i in (1..5)
             driver = random_driver(gmap)
             gmap.assign(driver)
              
             drivers.push(driver)
         end
 
-        for i in (0...3)
-            store_x, store_y = rand(0...n), rand(0...n)
-            while(!gmap.is_nil(store_y, store_y))
-                store_x, store_y = rand(0...n), rand(0...n)
-            end
+        for i in (1..3)
+            temp = random_coordinate(gmap)
+            store_x, store_y = temp[0], temp[1]
 
             store_attr = random_store(5)
             store_name, *store_attr = store_attr
@@ -572,17 +630,18 @@ def execute_arg(args)
     elsif args.length == 3
         begin 
             if(Integer(args[0]) < 3)
-                puts "Arguments invalid! Map with size #{x}*#{x} is too small\n\n"
+                x = args[0]
+                puts "Arguments invalid! Map with size #{x}*#{x} is too small\n"
                 exit
             end
             args.each do |x|
                 if(Integer(x) < 0)
-                    puts "Arguments invalid! Please input non-negative integer arguments\n\n"
+                    puts "Arguments invalid!\n"
                     exit
                 end
             end
         rescue Exception => e
-            puts "Arguments invalid! Please input non-negative integer arguments\n\n"
+            puts "Please input non-negative integer arguments\n"
             exit
         end
         execute_game("num", *args)
