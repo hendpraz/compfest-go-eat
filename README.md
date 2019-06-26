@@ -22,7 +22,7 @@ You are going to make a command line app called “Go-Eat”. The app consists o
 ## Assumptions
 
 From the Problem Desciption's details, I assume that:
-- The creations (user, drivers, and stores) must be placed on different coordinate. It will make the map unambiguos when it shown to the screen.
+- The creations (user, drivers, and stores) must be placed on different coordinate. It will make the map unambiguos when it shown to the screen. It also guarantee that there is at least a path that can be taken for each driver to go to every store before finally proceeding to the user.
 - A map must be wide enough to put all the creations on it. Otherwise, it will be invalid input
 - A creation CAN move through other creation on the map.
 - Random coordinate of places will generate randomly for maximum 4 attempts. If it's more than 4 attemps but the random coordinate is placed by another creation, the program will do sequential search to find the empty places in map
