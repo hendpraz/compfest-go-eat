@@ -20,3 +20,14 @@ go to (3,1)
 go to (2,1)
 go to (1,1), driver arrived at your place!
 ---
+Warung Nugroho
+2
+Kwetiaw Goreng @ 12000 x 2
+Kwetiaw Goreng @ 12000 x 6
+96600
+Abdul
+driver is on the way to store, start at (0,2)
+go to (1,2), driver arrived at the store!
+driver has bought the item(s), start at (1,2)
+go to (2,2), driver arrived at your place!
+---
