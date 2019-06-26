@@ -1,63 +1,22 @@
-Kabobs
+Kegeprek
 1
-Kebab + Sayuran @ 25000 x 3
-78000
-Kusuma
+Es Kopi Susu @ 15000 x 3
+49200
+Irma
 driver is on the way to store, start at (4,4)
-go to (4,5)
-go to (4,6), driver arrived at the store!
-driver has bought the item(s), start at (4,6)
-go to (4,5)
-go to (4,4)
-go to (4,3)
-go to (4,2)
+go to (5,4)
+go to (6,4)
+go to (7,4)
+go to (8,4), driver arrived at the store!
+driver has bought the item(s), start at (8,4)
+go to (8,3)
+go to (8,2)
+go to (8,1)
+go to (7,1)
+go to (6,1)
+go to (5,1)
 go to (4,1)
 go to (3,1)
-go to (2,1)
-go to (1,1), driver arrived at your place!
----
-Pizza Hut
-2
-Cheese Burst Pizza @ 100000 x 50
-Cheese Burst Pizza @ 100000 x 40
-9001500
-Anita
-driver is on the way to store, start at (2,5)
-go to (2,4), driver arrived at the store!
-driver has bought the item(s), start at (2,4)
-go to (2,3)
-go to (2,2)
-go to (2,1)
-go to (1,1), driver arrived at your place!
----
-Kabobs
-1
-Kebab + Sayuran @ 25000 x 50
-1253000
-Novita
-driver is on the way to store, start at (4,4)
-go to (4,5)
-go to (4,6), driver arrived at the store!
-driver has bought the item(s), start at (4,6)
-go to (4,5)
-go to (4,4)
-go to (4,3)
-go to (4,2)
-go to (4,1)
-go to (3,1)
-go to (2,1)
-go to (1,1), driver arrived at your place!
----
-Pizza Hut
-1
-Cheese Burst Pizza @ 100000 x 10
-1001500
-Raden
-driver is on the way to store, start at (2,5)
-go to (2,4), driver arrived at the store!
-driver has bought the item(s), start at (2,4)
-go to (2,3)
-go to (2,2)
 go to (2,1)
 go to (1,1), driver arrived at your place!
 ---

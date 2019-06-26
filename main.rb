@@ -213,7 +213,7 @@ def view_history
     else
         puts "\nOrder History:\n\n"
         $history.each do |line|
-            puts line.strip
+            puts line
         end
         puts ""
     end
@@ -530,6 +530,7 @@ def execute_game(first_arg, *rest_args)
                     distance = min + manhattan(user.x, user.y, selected_store.x, selected_store.y)
                     total_price = total_price + (unit_costs * distance)
                     puts "Total price with delivery fee: #{total_price}\n\n"
+                    $history.push(total_price)
                     order_history.push(total_price)
 
                     #Write selected driver name
@@ -571,6 +572,7 @@ def execute_game(first_arg, *rest_args)
                         puts str
                         order_history.push(str)
                     end
+                    $history.push('---')
                     order_history.push('---')
                     puts "\nEnjoy your order!\n\n"
                     puts "Please rate the driver with integer in range 1 to 5 (inclusive)"
