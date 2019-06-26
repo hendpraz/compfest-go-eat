@@ -102,15 +102,15 @@ Why I format the history like this?
 ## Steps
 
 I tried to use TDD steps 
-1. Write code to process the arguments, test it
-2. Design the Classes, apply SOLID, test it
-3. Create the database for the whole program, test it
-4. Create the "Show Map" feature, test it
-5. Create the "Order Food" feature, test it
-6. Create the "View History" feature, test it
-7. Create the Driver Rating feature, test it
-8. Handle Edge Cases
-9. Refactor, Keep the Code DRY
+1. Write code to process the arguments
+2. Design the Classes, apply SOLID
+3. Create the database for the whole program
+4. Create the "Show Map" feature
+5. Create the "Order Food" feature
+6. Create the "View History" feature
+7. Create the Driver Rating feature
+
+Tests, Handle Edge Cases, and Refactor in every step
 
 ## App Demo
 
