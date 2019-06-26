@@ -127,6 +127,7 @@ I tried to handle:
 - Invalid input to select menu
 - Invalid amount of item ordered
 - Invalid input to rate the driver
+- Infinite loop because randomize a coordinate for too long
 
 ## References
 
