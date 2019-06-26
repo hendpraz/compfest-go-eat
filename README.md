@@ -51,7 +51,7 @@ Classes:
 
 I use .txt format because it's easy to use.
 
-Input file format(for Map and Creations):
+Input file format (for Map and Creations):
 ```
 10          #Map size
 1 1         #User coordinate
@@ -72,6 +72,7 @@ Kabobs
 Kebab + Sayuran @ 25000
 ```
 
+Note: Ignore the comments with '#'
 Why I format the input like this?
 - It has the same order with the steps of creating a map in other ways (pass 0 or 3 arguments)
 - It's readable. The coordinate is placed on the same line
