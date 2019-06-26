@@ -6,6 +6,7 @@
 
 <h2 align="center">
   Muhammad Hendry Prasetya
+  <br>
 </h2>
 
 <h3 align="center">
@@ -127,6 +128,5 @@ I tried to handle:
 
 ## References
 
-Indonesian names:
-
-[FaktaMuharam](http://faktamuharam.blogspot.com/2012/11/top-1000-nama-populer-di-indonesia.html)
+Indonesian names: [FaktaMuharam](http://faktamuharam.blogspot.com/2012/11/top-1000-nama-populer-di-indonesia.html)
+Diagram: [Draw.io](https://www.draw.io/)
