@@ -31,3 +31,46 @@ go to (1,2), driver arrived at the store!
 driver has bought the item(s), start at (1,2)
 go to (2,2), driver arrived at your place!
 ---
+Warung Amelia
+1
+Paket Ayam Rica @ 15000 x 2
+33000
+Nugroho
+driver is on the way to store, start at (8,3)
+go to (8,2)
+go to (8,1)
+go to (7,1), driver arrived at the store!
+driver has bought the item(s), start at (7,1)
+go to (7,2)
+go to (7,3)
+go to (7,4)
+go to (7,5)
+go to (7,6)
+go to (7,7)
+go to (7,8), driver arrived at your place!
+---
+Warung Irma
+1
+Kwetiaw Goreng @ 12000 x 3
+37200
+Adi
+driver is on the way to store, start at (0,0)
+go to (0,1)
+go to (0,2), driver arrived at the store!
+driver has bought the item(s), start at (0,2)
+go to (1,2)
+go to (2,2), driver arrived at your place!
+---
+Warung Maya
+1
+Mie Goreng @ 8000 x 2
+17500
+Devi
+driver is on the way to store, start at (0,1)
+go to (0,0), driver arrived at the store!
+driver has bought the item(s), start at (0,0)
+go to (0,1)
+go to (0,2)
+go to (1,2)
+go to (2,2), driver arrived at your place!
+---
