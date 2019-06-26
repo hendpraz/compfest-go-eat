@@ -293,14 +293,18 @@ def execute_game(first_arg, *rest_args)
                     line = str.gets.split(" ")
                     store_x = line[0].to_i
                     store_y = line[1].to_i
-                    
-                    store_attr = []
-                    store_name = str.gets.chomp #Store name
-                    r = str.gets.to_i #Store menu
-                    for j in (0...r)
-                        line = str.gets.split(/\s*@\s*/)
-                        store_attr.push(line[0].strip) #food
-                        store_attr.push(line[1].to_i) #price
+                    if(driver_x >= 0) && (driver_y >= 0)
+                        store_attr = []
+                        store_name = str.gets.chomp #Store name
+                        r = str.gets.to_i #Store menu
+                        for j in (0...r)
+                            line = str.gets.split(/\s*@\s*/)
+                            store_attr.push(line[0].strip) #food
+                            store_attr.push(line[1].to_i) #price
+                        end
+                    else
+                        puts "Wrong coordinate of a store!\n\n"
+                        exit
                     end
 
                     store = Store.new(store_x, store_y, store_name, *store_attr)
@@ -519,6 +523,7 @@ def execute_game(first_arg, *rest_args)
                         print "Rating : "
                         cmd = STDIN.gets.chomp
                     end
+                    puts ""
                     selected_driver.rate(cmd.to_i)
                     if(selected_driver.rating < 3)
                         #Remove the driver, generate new driver
