@@ -72,7 +72,7 @@ Kabobs
 Kebab + Sayuran @ 25000
 ```
 
-Note: Ignore the comments with '#'
+Note: Ignore the comments with '#'<br>
 Why I format the input like this?
 - It has the same order with the steps of creating a map in other ways (pass 0 or 3 arguments)
 - It's readable. The coordinate is placed on the same line
