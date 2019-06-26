@@ -21,9 +21,15 @@ class Map
         end
     end
 
-    def assign(x, y, obj)
+    def assign(obj)
         #assign object to map cell
+        x = obj.x
+        y = obj.y
         @cell[x][y].creation = obj
+    end
+
+    def delete_driver(x, y)
+        @cell[x][y].creation = nil
     end
 
     def is_nil(x, y)
@@ -98,10 +104,18 @@ class Store < Creation
 end
 
 class Driver < Person
-    attr_accessor :rating
+    attr_accessor :rating, :num_of_rate, :sum_of_rates
     def initialize(x, y)
         super(x, y, $name[rand($name.length)])
         @rating = 0.0
+        @num_of_rate = 0
+        @sum_of_rates = 0
+    end
+
+    def rate(user_rate)
+        @num_of_rate += 1
+        @sum_of_rates = @sum_of_rates + user_rate
+        @rating = @sum_of_rates.to_f / @num_of_rate
     end
 
     def render
@@ -174,6 +188,17 @@ def random_store(max_index)
     store_objects
 end
 
+def random_driver(gmap)
+    n = gmap.size
+    driver_x, driver_y = rand(0...n), rand(0...n)
+    while(!gmap.is_nil(driver_x, driver_y))
+        driver_x, driver_y = rand(0...n), rand(0...n)
+    end
+    driver = Driver.new(driver_x, driver_y)
+
+    driver
+end
+
 def show_help
     puts "Please select a command by inputing a number"
     puts "For example, your command: 1\n\n"
@@ -240,18 +265,27 @@ def execute_game(first_arg, *rest_args)
 
                 #Create User
                 line = str.gets.split(" ")
-                user = User.new(line[0].to_i,line[1].to_i)
-                gmap.assign(user.x, user.y, user)
+                if(line[0].to_i >= 0) && (line[0].to_i >= 0)
+                    user = User.new(line[0].to_i,line[1].to_i)
+                    gmap.assign(user)
+                else
+                    puts "Wrong coordinate of user!\n\n"
+                    exit
+                end
                 
                 p = str.gets.to_i
                 for i in (0...p)
                     line = str.gets.split(" ")
                     driver_x = line[0].to_i
                     driver_y = line[1].to_i
-
-                    driver = Driver.new(driver_x, driver_y)
-                    gmap.assign(driver_x, driver_y, driver)
-                    drivers.push(driver)
+                    if(driver_x >= 0) && (driver_y >= 0)
+                        driver = Driver.new(driver_x, driver_y)
+                        gmap.assign(driver)
+                        drivers.push(driver)
+                    else
+                        puts "Wrong coordinate of a driver!\n\n"
+                        exit
+                    end
                 end
 
                 q = str.gets.to_i
@@ -270,7 +304,7 @@ def execute_game(first_arg, *rest_args)
                     end
 
                     store = Store.new(store_x, store_y, store_name, *store_attr)
-                    gmap.assign(store_x, store_y, store)
+                    gmap.assign(store)
                     stores.push(store)
                 end
             rescue Exception => e
@@ -292,16 +326,12 @@ def execute_game(first_arg, *rest_args)
 
         gmap = Map.new(n)
         user = User.new(user_x, user_y)
-        gmap.assign(user_x, user_y, user)
+        gmap.assign(user)
 
         #Create 5 drivers and 3 stores
         for i in (0...5)
-            driver_x, driver_y = rand(0...n), rand(0...n)
-            while(!gmap.is_nil(driver_x, driver_y))
-                driver_x, driver_y = rand(0...n), rand(0...n)
-            end
-            driver = Driver.new(driver_x, driver_y)
-            gmap.assign(driver_x, driver_y, driver)
+            driver = random_driver(gmap)
+            gmap.assign(driver)
              
             drivers.push(driver)
         end
@@ -316,7 +346,7 @@ def execute_game(first_arg, *rest_args)
             store_name, *store_attr = store_attr
 
             store = Store.new(store_x, store_y, store_name, *store_attr)
-            gmap.assign(store_x, store_y, store)
+            gmap.assign(store)
             stores.push(store)
         end
     end
@@ -401,7 +431,7 @@ def execute_game(first_arg, *rest_args)
                     #Write store name to file
                     $history.push(selected_store.name)
                     order_history.push(selected_store.name)
-                    #Write order length / 3
+                    #Write order selected = order array length / 3
                     order_history.push(order.length / 3)
                     
                     puts "\nYour order: "
@@ -413,20 +443,32 @@ def execute_game(first_arg, *rest_args)
                         order_history.push(temp)
                         $history.push(temp)
                         puts temp
+
                         total_price = total_price + (order[i+1] * order[i+2])
                         i += 3
                     end
-                    puts "Total price: #{total_price}\n\n"
-                    order_history.push(total_price)
+
+                    #Find the closest Go-Eat driver
                     min = gmap.size ** 2
                     selected_driver = nil
+                    driver_idx = -1
+                    idx = 0
                     drivers.each do |obj|
                         temp = manhattan(obj.x, obj.y, selected_store.x, selected_store.y)
                         if temp < min
                             selected_driver = obj
                             min = temp
+                            driver_idx = idx
                         end
+                        idx += 1
                     end
+
+                    #Add the delivery fee
+                    unit_costs = 300
+                    distance = min + manhattan(user.x, user.y, selected_store.x, selected_store.y)
+                    total_price = total_price + (unit_costs * distance)
+                    puts "Total price with delivery fee: #{total_price}\n\n"
+                    order_history.push(total_price)
 
                     #Write selected driver name
                     order_history.push(selected_driver.name)
@@ -467,8 +509,30 @@ def execute_game(first_arg, *rest_args)
                         puts str
                         order_history.push(str)
                     end
-                    puts ""
                     order_history.push('---')
+                    puts "\nEnjoy your order!\n\n"
+                    puts "Please rate the driver with integer in range 1 to 5 (inclusive)"
+                    print "Rating : "
+                    cmd = STDIN.gets.chomp
+                    while(cmd.to_i < 1) || (cmd.to_i > 5)
+                        puts "You should put integer in range 1 to 5 (inclusive)"
+                        print "Rating : "
+                        cmd = STDIN.gets.chomp
+                    end
+                    selected_driver.rate(cmd.to_i)
+                    if(selected_driver.rating < 3)
+                        #Remove the driver, generate new driver
+                        puts "A driver has been removed from the map"
+                        puts "Go-Eat is looking for a driver..."
+                        drivers.delete_at(driver_idx)
+                        gmap.delete_driver(selected_driver.x, selected_driver.y)
+
+                        driver = random_driver(gmap)
+                        gmap.assign(driver)
+                        
+                        drivers.push(driver)
+                        puts "A new driver has arrived!\n\n"
+                    end
 
                     File.open(history, 'a') do |file|
                         order_history.each do |line|
