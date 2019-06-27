@@ -30,7 +30,7 @@ From the Problem Desciption's details, I assume that:
 - User must rate the driver
 - The money of the User is unlimited
 - Two or more same menu in one order is allowed
-- a valid coordinate starts from zero to n
+- a valid coordinate starts from zero to n-1
 
 ## Design Decision
 
