@@ -13,7 +13,7 @@
   Bandung Institute of Technology
 </h2>
 
-<p align = center> This repository link = [https://github.com/hendpraz/compfest-go-eat](https://github.com/hendpraz/compfest-go-eat) <p>
+<p align = center> This repository link = <a href="https://github.com/hendpraz/compfest-go-eat">hendpraz/compfest-go-eat </a> </p>
 
 ## Problem Description
 
@@ -36,7 +36,7 @@ From the Problem Desciption's details, I assume that:
 
 ### Object Oriented Design
 
-![diagram](img/diagram.jpg)
+<img align="center" src="img/diagram.jpg" >
 
 Classes:
 - Map Class: Has attributes size and Array of Cell
@@ -99,6 +99,22 @@ Why I format the history like this?
 - It has the same order with the steps of "Order Food" action: Choose store -> Choose Menu -> Get a Driver -> Display Driver's Route
 - It's usable for "View History" action. The view history require the information on the file except driver's name and driver's route.
 
+## Code Design
+
+### `execute_arg`
+The code will execute the program by arguments input of the user. Arguments will go through the validation process.
+
+### `execute_app`
+The code will execute the app by the parameter passed. If it's from a file, the code will call `map_from_file` function. Otherwise, the code will call `map_from_args` function.
+
+A map and its objects will be stored in a hash. After the map has been created, the program will show options for the user. Each options has it own function except delete history and exit (`render_map`, `process_order`, and `view_history`).
+
+The map coordinate (x,y) stored in array as [x][y]. But, it will displayed on the screen like this
+<br>
+<img align="center" src="img/map.jpg" width="250" height="250">
+
+Once the map created, the only objects that would change is Map and Driver object. Hence, the item in the hash that would change is `hash["gmap"]` and `hash["drivers"]`.
+
 ## Steps
 
 I tried to use TDD steps 
@@ -115,7 +131,7 @@ Tests, Handle Edge Cases, and Refactor in every step
 ## App Demo
 
 A sample input output of the App
-![demo](img/demo.jpg)
+<img src="img/demo.jpg" align="center">
 
 ## Edge Cases Handled
 

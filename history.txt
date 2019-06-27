@@ -1,0 +1,25 @@
+Warung Abdul
+1
+Paket Ayam Rica @ 15000 x 5
+80100
+Sri
+driver is on the way to store, start at (4,15)
+go to (4,16)
+go to (5,16)
+go to (6,16)
+go to (7,16)
+go to (8,16), driver arrived at the store!
+driver has bought the item(s), start at (8,16)
+go to (8,17)
+go to (9,17)
+go to (10,17)
+go to (11,17)
+go to (12,17)
+go to (13,17)
+go to (14,17)
+go to (15,17)
+go to (16,17)
+go to (17,17)
+go to (18,17)
+go to (19,17), driver arrived at your place!
+---
