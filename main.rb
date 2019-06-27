@@ -105,6 +105,18 @@ class Store < Creation
         end
         puts ""
     end
+
+    def food_index(food_name)
+        idx = -1
+        for i in (0...@foods.length)
+            if(@foods[i].eql?(food_name))
+                idx = i
+                break
+            end
+        end
+
+        idx
+    end
 end
 
 class Driver < Person
@@ -453,14 +465,25 @@ def process_order(hash)
         while(!done) && (!close)
             selected_store.show_menu
             puts "0. Cancel\n\n"
-            puts "You can choose a menu by number"
+            puts "You can choose a menu by number or exact name"
             print "Your Choice: "
             cmd = STDIN.gets.chomp
-            if(cmd.to_i.eql?(0)) ||(cmd.eql?("Cancel"))
+            idx = selected_store.food_index(cmd)
+            is_ordering = false
+            if(idx != -1)
+                is_ordering = true    
+            elsif(cmd.to_i.eql?(0)) ||(cmd.eql?("Cancel"))
                 close = true
                 puts "Loading the main menu...\n\n"
             elsif(cmd.to_i <= selected_store.num_of_foods) && (cmd.to_i > 0)
                 idx = cmd.to_i - 1
+                is_ordering = true
+            else
+                close = true
+                puts "Wrong input! Getting back to main menu...\n\n"
+            end
+
+            if(is_ordering)
                 order.push(selected_store.foods[idx])
                 order.push(selected_store.prices[idx])
                 puts "\nHow many #{selected_store.foods[idx]} you want to buy?"
@@ -482,9 +505,6 @@ def process_order(hash)
                     close = true
                     puts "Wrong input! Getting back to main menu...\n\n"
                 end
-            else
-                close = true
-                puts "Wrong input! Getting back to main menu...\n\n"
             end
         end
         if(!close)

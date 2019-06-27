@@ -23,3 +23,110 @@ go to (17,17)
 go to (18,17)
 go to (19,17), driver arrived at your place!
 ---
+Warung Wahyu
+1
+Paket Ayam Geprek @ 15000 x 2
+38400
+Bagus
+driver is on the way to store, start at (4,3)
+go to (4,4)
+go to (4,5)
+go to (4,6)
+go to (4,7)
+go to (4,8)
+go to (4,9)
+go to (3,9)
+go to (2,9)
+go to (1,9), driver arrived at the store!
+driver has bought the item(s), start at (1,9)
+go to (1,10)
+go to (1,11)
+go to (1,12)
+go to (1,13)
+go to (1,14)
+go to (2,14)
+go to (3,14)
+go to (4,14)
+go to (5,14)
+go to (6,14)
+go to (7,14)
+go to (8,14)
+go to (9,14)
+go to (10,14)
+go to (11,14)
+go to (12,14)
+go to (13,14)
+go to (14,14)
+go to (15,14), driver arrived at your place!
+---
+Warung Putra
+1
+Kwetiaw Goreng @ 12000 x 2
+30300
+Aditya
+driver is on the way to store, start at (16,18)
+go to (16,17)
+go to (16,16)
+go to (16,15)
+go to (16,14)
+go to (16,13)
+go to (16,12)
+go to (16,11)
+go to (17,11)
+go to (18,11), driver arrived at the store!
+driver has bought the item(s), start at (18,11)
+go to (18,12)
+go to (18,13)
+go to (18,14)
+go to (18,15)
+go to (18,16)
+go to (18,17)
+go to (17,17)
+go to (16,17)
+go to (15,17)
+go to (14,17)
+go to (13,17)
+go to (12,17), driver arrived at your place!
+---
+Warung Muhamad
+1
+Kwetiaw Kuah @ 12000 x 2
+25200
+Eko
+driver is on the way to store, start at (1,1)
+go to (0,1), driver arrived at the store!
+driver has bought the item(s), start at (0,1)
+go to (0,2)
+go to (1,2)
+go to (2,2), driver arrived at your place!
+---
+Warung Puspita
+1
+Kwetiaw Kuah @ 12000 x 2
+25500
+Fajar
+driver is on the way to store, start at (1,0)
+go to (0,0), driver arrived at the store!
+driver has bought the item(s), start at (0,0)
+go to (0,1)
+go to (0,2)
+go to (1,2)
+go to (2,2), driver arrived at your place!
+---
+Kabobs
+1
+Kebab + Sayuran @ 25000 x 50
+1252700
+Achmad
+driver is on the way to store, start at (4,4)
+go to (4,5)
+go to (4,6), driver arrived at the store!
+driver has bought the item(s), start at (4,6)
+go to (4,5)
+go to (4,4)
+go to (4,3)
+go to (4,2)
+go to (3,2)
+go to (2,2)
+go to (1,2), driver arrived at your place!
+---
